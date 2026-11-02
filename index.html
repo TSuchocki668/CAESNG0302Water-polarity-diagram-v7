@@ -3,474 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Water Polarity — Section 3.2 Interactive Diagram</title>
+<title>Water Polarity and Hydrogen Bonding</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --color-background-primary:   #ffffff;
-    --color-background-secondary: #f5f4f0;
-    --color-text-primary:   #1a1a18;
-    --color-text-secondary: #5f5e5a;
-    --color-text-tertiary:  #888780;
-    --color-border-tertiary:  rgba(0,0,0,0.12);
-    --color-border-secondary: rgba(0,0,0,0.22);
+    --bg: #ffffff;
+    --panel: #f5f4f0;
+    --text: #161616;
+    --text-2: #333333;
+    --border: #cccccc;
     --font-sans: system-ui, -apple-system, sans-serif;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-background-primary:   #1e1e1c;
-      --color-background-secondary: #2a2a27;
-      --color-text-primary:   #e8e6df;
-      --color-text-secondary: #b4b2a9;
-      --color-text-tertiary:  #888780;
-      --color-border-tertiary:  rgba(255,255,255,0.10);
-      --color-border-secondary: rgba(255,255,255,0.18);
-    }
   }
 
   body {
     font-family: var(--font-sans);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
+    background: var(--bg);
+    color: var(--text);
+    max-width: 1000px;
+    margin: auto;
     padding: 16px 12px 24px;
   }
 
-  .hint {
-    font-size: 11px;
-    font-style: italic;
-    color: var(--color-text-tertiary);
-    text-align: center;
-    margin: 0 0 8px;
-  }
+  .hint { font-size: 14px; color: var(--text-2); text-align: center; margin: 0 0 10px; }
 
-  /* Two-panel grid */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 12px; align-items: start; }
 
-  .panel {
-    background: var(--color-background-secondary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: 8px;
-    padding: 8px 4px 10px;
-  }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .panel-title { font-size: 18px; font-weight: 650; text-align: center; margin: 0 0 2px; }
+  .panel-sub { font-size: 14px; color: var(--text-2); text-align: center; margin: 0 0 8px; line-height: 1.35; min-height: 2.7em; }
+  .panel svg { display: block; width: 100%; max-height: 380px; margin: auto; }
 
-  .panel-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    text-align: center;
-    margin: 0 0 2px;
-  }
+  .bond-key { font-size: 14px; color: #222; line-height: 1.5; margin: 0 0 14px; }
 
-  .panel-sub {
-    font-size: 9px;
-    color: var(--color-text-secondary);
-    text-align: center;
-    margin: 0 0 4px;
-    line-height: 1.35;
-  }
+  .caption { font-size: 16px; color: var(--text); line-height: 1.6; margin: 0 0 8px; }
 
-  .caption {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    text-align: left;
-    margin: 0 0 8px;
-    line-height: 1.6;
-  }
+  .tagline { font-size: 12px; color: #000; text-align: left; margin-top: 6px; }
 
   .cl { cursor: pointer; }
-  .cl:hover { opacity: 0.82; }
+  .cl:focus { outline: none; }
+  .cl:hover circle { stroke: #111; stroke-width: 2; }
+  .cl:focus circle, .cl.active circle { stroke: #111; stroke-width: 3; }
 
-  #pop {
-    display: none;
-    position: absolute;
-    width: 204px;
-    border-radius: 8px;
-    overflow: hidden;
-    z-index: 20;
-    border: 0.5px solid var(--color-border-secondary);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  .detail { position: relative; background: #eef8f6; border-left: 4px solid #147d70; border-radius: 4px;
+            padding: 12px 78px 12px 14px; margin: 12px 0 0; line-height: 1.5; text-align: left; }
+  .detail h3 { font-size: 16px; margin: 0 0 4px; }
+  .detail p { font-size: 15px; margin: 0; }
+  .detail button { position: absolute; right: 10px; top: 10px; background: #fff; color: #000;
+                   border: 1px solid #777; border-radius: 4px; padding: 6px 8px; cursor: pointer; font-size: 13px; }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .panel svg { max-height: 320px; }
+    .panel-sub { min-height: 0; }
   }
-  .pop-bar  { height: 6px; }
-  .pop-body { background: var(--color-background-primary); padding: 8px 10px 10px; }
-  .pop-name { font-size: 11px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
-  .pop-desc { font-size: 10px; color: var(--color-text-secondary); line-height: 1.5; margin: 0; }
-  .pop-close{ font-size: 8px; color: var(--color-text-tertiary); margin-top: 6px; text-align: right; }
 </style>
 </head>
 <body>
 
-<div style="position:relative;" id="pw">
+<p class="hint">Select any atom to learn more. (Keyboard: Tab to an atom, then press Enter or Space.)</p>
 
-  <p class="hint">Click any atom to learn more</p>
+<div class="grid">
 
-  <div class="grid">
+  <!-- PANEL 1 · Polarity: one water molecule, bond angle about 104.5 degrees -->
+  <div class="panel" id="panel-1">
+    <p class="panel-title">Polarity</p>
+    <p class="panel-sub">unequal electron sharing and a bent shape create polarity</p>
+    <svg role="group" aria-label="A bent water molecule with a slightly negative oxygen side and two slightly positive hydrogens" viewBox="0 0 180 108">
+      <defs>
+        <radialGradient id="gO" cx="35%" cy="28%" r="72%">
+          <stop offset="0%" stop-color="#F28B6E"/><stop offset="40%" stop-color="#D85A30"/><stop offset="100%" stop-color="#8B2A10"/>
+        </radialGradient>
+        <radialGradient id="gH" cx="35%" cy="28%" r="70%">
+          <stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#E8F4FF"/><stop offset="100%" stop-color="#A8C8E8"/>
+        </radialGradient>
+      </defs>
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- PANEL 1 · Polarity                                     -->
-    <!--                                                        -->
-    <!-- δ charge sizing rationale:                             -->
-    <!--   One δ− on O must visually balance two δ+ on H.      -->
-    <!--   δ− = 14px  |  each δ+ = 10px                        -->
-    <!--   Together the two δ+ read as roughly equal in weight  -->
-    <!--   to the single δ− on the opposite side.               -->
-    <!--                                                        -->
-    <!-- Oxygen: CPK red (#D85A30 gradient) per chemistry       -->
-    <!-- convention, matching student's prior chemistry study.  -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div class="panel">
-      <p class="panel-title">Polarity</p>
-      <p class="panel-sub">unequal electron sharing creates partial charges</p>
-      <svg width="100%" viewBox="0 0 180 155" style="display:block">
-        <defs>
-          <!-- CPK red oxygen gradient -->
-          <radialGradient id="gOxyRed" cx="35%" cy="28%" r="72%">
-            <stop offset="0%"   stop-color="#F28B6E"/>
-            <stop offset="40%"  stop-color="#D85A30"/>
-            <stop offset="100%" stop-color="#8B2A10"/>
-          </radialGradient>
-          <!-- Hydrogen: near-white with light blue edge -->
-          <radialGradient id="gHWhite" cx="35%" cy="28%" r="70%">
-            <stop offset="0%"   stop-color="#ffffff"/>
-            <stop offset="55%"  stop-color="#E8F4FF"/>
-            <stop offset="100%" stop-color="#A8C8E8"/>
-          </radialGradient>
-          <!-- Dipole arrow marker -->
-          <marker id="dArrow" viewBox="0 0 10 10" refX="8" refY="5"
-                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#8B2A10"
-                  stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round"/>
-          </marker>
-        </defs>
+      <!-- Charge halos: oxygen side and hydrogen sides -->
+      <circle cx="90" cy="50" r="48" fill="#F28B6E" opacity="0.12"/>
+      <circle cx="50" cy="81" r="26" fill="#FAC775" opacity="0.22"/>
+      <circle cx="130" cy="81" r="26" fill="#FAC775" opacity="0.22"/>
 
-        <!-- Charge halos — red for O side, amber for H sides -->
-        <circle cx="90"  cy="50" r="48" fill="#F28B6E" opacity="0.12"/>
-        <circle cx="50"  cy="81" r="32" fill="#FAC775" opacity="0.20"/>
-        <circle cx="130" cy="81" r="32" fill="#FAC775" opacity="0.20"/>
+      <!-- Covalent bonds -->
+      <line x1="90" y1="50" x2="50" y2="81" stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
+      <line x1="90" y1="50" x2="130" y2="81" stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
 
-        <!-- Bond lines -->
-        <line x1="90" y1="50" x2="50"  y2="81"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-        <line x1="90" y1="50" x2="130" y2="81"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
+      <g class="cl" role="button" tabindex="0" aria-label="Oxygen in a water molecule" data-info="o1">
+        <circle cx="90" cy="50" r="24" fill="url(#gO)" stroke="#8B2A10" stroke-width="0.8"/>
+        <text x="90" y="50" text-anchor="middle" dominant-baseline="central" style="font-size:15px;font-weight:500;fill:#fff">O</text>
+      </g>
+      <text x="90" y="16" text-anchor="middle" style="font-size:12px;font-weight:600;fill:#8B2A10">δ−</text>
 
-        <!-- Dipole arrow (δ+ toward δ−, pointing up toward O) -->
-        <line x1="90" y1="102" x2="90" y2="78"
-              stroke="#8B2A10" stroke-width="1.5"
-              stroke-dasharray="4 2.5" marker-end="url(#dArrow)" opacity="0.7"/>
-
-        <!-- O atom (red sphere) -->
-        <g class="cl" onclick="showP(event,'o2')">
-          <circle cx="90" cy="50" r="24"
-                  fill="url(#gOxyRed)" stroke="#8B2A10" stroke-width="0.8"/>
-          <text x="90" y="50" text-anchor="middle" dominant-baseline="central"
-                style="font-size:15px;font-weight:500;fill:#fff;
-                       font-family:var(--font-sans)">O</text>
-        </g>
-
-        <!-- δ− above O: 14px — sized to balance the two δ+ combined -->
-        <text x="90" y="16" text-anchor="middle"
-              style="font-size:14px;font-weight:500;fill:#8B2A10;
-                     font-family:var(--font-sans)">δ−</text>
-
-        <!-- H atoms (near-white spheres, electron-depleted) -->
-        <g class="cl" onclick="showP(event,'h2')">
-          <circle cx="50" cy="81" r="17"
-                  fill="url(#gHWhite)" stroke="#888" stroke-width="0.8"/>
-          <text x="50" y="81" text-anchor="middle" dominant-baseline="central"
-                style="font-size:11px;font-weight:500;fill:#333;
-                       font-family:var(--font-sans)">H</text>
-        </g>
-        <g class="cl" onclick="showP(event,'h2')">
-          <circle cx="130" cy="81" r="17"
-                  fill="url(#gHWhite)" stroke="#888" stroke-width="0.8"/>
-          <text x="130" y="81" text-anchor="middle" dominant-baseline="central"
-                style="font-size:11px;font-weight:500;fill:#333;
-                       font-family:var(--font-sans)">H</text>
-        </g>
-
-        <!-- δ+ labels outside each H: 10px each.
-             Two δ+ at 10px each balance one δ− at 14px visually. -->
-        <text x="18"  y="88" text-anchor="middle"
-              style="font-size:10px;font-weight:500;fill:#854F0B;
-                     font-family:var(--font-sans)">δ+</text>
-        <text x="162" y="88" text-anchor="middle"
-              style="font-size:10px;font-weight:500;fill:#854F0B;
-                     font-family:var(--font-sans)">δ+</text>
-
-        <!-- Explanatory text -->
-        <text x="90" y="122" text-anchor="middle"
-              style="font-size:8px;fill:#8B2A10;font-family:var(--font-sans)">arrow: δ+ toward δ−</text>
-        <text x="90" y="136" text-anchor="middle"
-              style="font-size:8px;fill:var(--color-text-tertiary);
-                     font-family:var(--font-sans)">the molecule acts like a tiny magnet</text>
-      </svg>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- PANEL 2 · Hydrogen bonding                             -->
-    <!--                                                        -->
-    <!-- δ charge sizing:                                       -->
-    <!--   Top molecule: δ− on O = 11px, each δ+ on H = 8px    -->
-    <!--   Lower molecules: δ− on O = 10px (context label)      -->
-    <!--   Same balance principle: one δ− against two δ+        -->
-    <!--                                                        -->
-    <!-- δ− added to top center O atom (was missing).          -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div class="panel">
-      <p class="panel-title">Hydrogen bonding</p>
-      <p class="panel-sub">polarity links neighboring molecules</p>
-      <svg width="100%" viewBox="0 0 180 208" style="display:block">
-        <defs>
-          <!-- Red oxygen (small, for top molecule) -->
-          <radialGradient id="gOxyRed3" cx="35%" cy="28%" r="72%">
-            <stop offset="0%"   stop-color="#F28B6E"/>
-            <stop offset="40%"  stop-color="#D85A30"/>
-            <stop offset="100%" stop-color="#8B2A10"/>
-          </radialGradient>
-          <!-- Red oxygen (smaller, for lower molecules) -->
-          <radialGradient id="gOxyRed3b" cx="35%" cy="28%" r="72%">
-            <stop offset="0%"   stop-color="#F28B6E"/>
-            <stop offset="40%"  stop-color="#D85A30"/>
-            <stop offset="100%" stop-color="#8B2A10"/>
-          </radialGradient>
-          <!-- Hydrogen amber tint (δ+ donors, top molecule) -->
-          <radialGradient id="gHAmber3" cx="35%" cy="28%" r="70%">
-            <stop offset="0%"   stop-color="#FFF9EA"/>
-            <stop offset="58%"  stop-color="#FFECC3"/>
-            <stop offset="100%" stop-color="#F5C46C"/>
-          </radialGradient>
-          <!-- Hydrogen near-white (non-bonding H atoms, lower molecules) -->
-          <radialGradient id="gHWhite3" cx="35%" cy="28%" r="70%">
-            <stop offset="0%"   stop-color="#ffffff"/>
-            <stop offset="55%"  stop-color="#E8F4FF"/>
-            <stop offset="100%" stop-color="#A8C8E8"/>
-          </radialGradient>
-        </defs>
-
-        <!-- H-bond dashed lines (drawn first, behind atoms) -->
-        <line x1="46"  y1="94" x2="32"  y2="148"
-              stroke="#2A9D8F" stroke-width="1.5"
-              stroke-dasharray="4 3" opacity="0.9"/>
-        <line x1="134" y1="94" x2="148" y2="148"
-              stroke="#2A9D8F" stroke-width="1.5"
-              stroke-dasharray="4 3" opacity="0.9"/>
-
-        <!-- H-bond labels above dashed lines -->
-        <text x="20"  y="106" text-anchor="middle"
-              style="font-size:7.5px;fill:#0F6E56;font-weight:500;
-                     font-family:var(--font-sans)">H-bond</text>
-        <text x="160" y="106" text-anchor="middle"
-              style="font-size:7.5px;fill:#0F6E56;font-weight:500;
-                     font-family:var(--font-sans)">H-bond</text>
-
-        <!-- Lower-left molecule bonds -->
-        <line x1="28" y1="162" x2="10" y2="132"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-        <line x1="28" y1="162" x2="10" y2="189"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-
-        <!-- Lower-right molecule bonds -->
-        <line x1="152" y1="162" x2="170" y2="132"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-        <line x1="152" y1="162" x2="170" y2="189"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-
-        <!-- Top-center molecule bonds -->
-        <line x1="90" y1="53" x2="50"  y2="84"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-        <line x1="90" y1="53" x2="130" y2="84"
-              stroke="#AEB8C1" stroke-width="4" stroke-linecap="round"/>
-
-        <!-- Top molecule: O (red sphere) -->
-        <g class="cl" onclick="showP(event,'o3')">
-          <circle cx="90" cy="53" r="21"
-                  fill="url(#gOxyRed3)" stroke="#8B2A10" stroke-width="0.8"/>
-          <text x="90" y="53" text-anchor="middle" dominant-baseline="central"
-                style="font-size:13px;font-weight:500;fill:#fff;
-                       font-family:var(--font-sans)">O</text>
-        </g>
-
-        <!-- δ− on top O: 11px. Sits above the sphere. -->
-        <text x="90" y="24" text-anchor="middle"
-              style="font-size:11px;font-weight:500;fill:#8B2A10;
-                     font-family:var(--font-sans)">δ−</text>
-
-        <!-- Top molecule: H (amber, δ+ donors) -->
-        <g class="cl" onclick="showP(event,'h3')">
-          <circle cx="50" cy="84" r="13"
-                  fill="url(#gHAmber3)" stroke="#BA7517" stroke-width="0.8"/>
-          <text x="50" y="84" text-anchor="middle" dominant-baseline="central"
-                style="font-size:9px;font-weight:500;fill:#854F0B;
-                       font-family:var(--font-sans)">H</text>
-        </g>
-        <g class="cl" onclick="showP(event,'h3')">
-          <circle cx="130" cy="84" r="13"
-                  fill="url(#gHAmber3)" stroke="#BA7517" stroke-width="0.8"/>
-          <text x="130" y="84" text-anchor="middle" dominant-baseline="central"
-                style="font-size:9px;font-weight:500;fill:#854F0B;
-                       font-family:var(--font-sans)">H</text>
-        </g>
-
-        <!-- δ+ on top H atoms: 8px each.
-             Two δ+ at 8px together balance one δ− at 11px on O. -->
-        <text x="26"  y="77" text-anchor="middle"
-              style="font-size:8px;font-weight:500;fill:#854F0B;
-                     font-family:var(--font-sans)">δ+</text>
-        <text x="154" y="77" text-anchor="middle"
-              style="font-size:8px;font-weight:500;fill:#854F0B;
-                     font-family:var(--font-sans)">δ+</text>
-
-        <!-- Lower-left: O (red) -->
-        <g class="cl" onclick="showP(event,'o4')">
-          <circle cx="28" cy="162" r="15"
-                  fill="url(#gOxyRed3b)" stroke="#8B2A10" stroke-width="0.8"/>
-          <text x="28" y="162" text-anchor="middle" dominant-baseline="central"
-                style="font-size:10px;font-weight:500;fill:#fff;
-                       font-family:var(--font-sans)">O</text>
-        </g>
-        <!-- δ− beside lower-left O (context label) -->
-        <text x="48" y="158" text-anchor="start"
-              style="font-size:10px;font-weight:500;fill:#8B2A10;
-                     font-family:var(--font-sans)">δ−</text>
-
-        <!-- Lower-left: H (non-bonding side, near-white) -->
-        <circle cx="10" cy="132" r="9"
-                fill="url(#gHWhite3)" stroke="#888" stroke-width="0.8"/>
-        <text x="10" y="132" text-anchor="middle" dominant-baseline="central"
-              style="font-size:7px;font-weight:500;fill:#333;
-                     font-family:var(--font-sans)">H</text>
-        <circle cx="10" cy="189" r="9"
-                fill="url(#gHWhite3)" stroke="#888" stroke-width="0.8"/>
-        <text x="10" y="189" text-anchor="middle" dominant-baseline="central"
-              style="font-size:7px;font-weight:500;fill:#333;
-                     font-family:var(--font-sans)">H</text>
-
-        <!-- Lower-right: O (red) -->
-        <g class="cl" onclick="showP(event,'o4')">
-          <circle cx="152" cy="162" r="15"
-                  fill="url(#gOxyRed3b)" stroke="#8B2A10" stroke-width="0.8"/>
-          <text x="152" y="162" text-anchor="middle" dominant-baseline="central"
-                style="font-size:10px;font-weight:500;fill:#fff;
-                       font-family:var(--font-sans)">O</text>
-        </g>
-        <!-- δ− beside lower-right O -->
-        <text x="132" y="158" text-anchor="end"
-              style="font-size:10px;font-weight:500;fill:#8B2A10;
-                     font-family:var(--font-sans)">δ−</text>
-
-        <!-- Lower-right: H (near-white) -->
-        <circle cx="170" cy="132" r="9"
-                fill="url(#gHWhite3)" stroke="#888" stroke-width="0.8"/>
-        <text x="170" y="132" text-anchor="middle" dominant-baseline="central"
-              style="font-size:7px;font-weight:500;fill:#333;
-                     font-family:var(--font-sans)">H</text>
-        <circle cx="170" cy="189" r="9"
-                fill="url(#gHWhite3)" stroke="#888" stroke-width="0.8"/>
-        <text x="170" y="189" text-anchor="middle" dominant-baseline="central"
-              style="font-size:7px;font-weight:500;fill:#333;
-                     font-family:var(--font-sans)">H</text>
-
-        <!-- Cohesion label -->
-        <text x="90" y="204" text-anchor="middle"
-              style="font-size:8px;fill:#0F6E56;font-weight:500;
-                     font-family:var(--font-sans)">cohesion: molecules cling together</text>
-      </svg>
-    </div>
-
-  </div><!-- /grid -->
-
-  <!-- Updated figure legend: two panels only, no em dashes -->
-  <p class="caption">The left panel shows water's polarity: oxygen pulls shared electrons toward itself, giving the oxygen side of the molecule a slight negative charge (δ−) and the hydrogen sides a slight positive charge (δ+). The right panel shows what polarity makes possible. Each δ+ hydrogen end attracts the δ− oxygen end of a neighboring molecule, forming a hydrogen bond. These bonds link water molecules into a flexible, shifting network, giving water the cohesion to form droplets, carry nutrients upward through plant stems, and remain liquid across the range of temperatures where life operates.</p>
-
-  <!-- Standard tagline: left-justified -->
-  <p style="font-size:10px;color:#666;margin-top:6px;font-style:italic;text-align:left;">Environmental Science through Nature's Genius</p>
-
-  <!-- Popup -->
-  <div id="pop">
-    <div class="pop-bar"  id="pop-bar"></div>
-    <div class="pop-body">
-      <p class="pop-name" id="pop-name"></p>
-      <p class="pop-desc" id="pop-desc"></p>
-      <p class="pop-close">click outside to close</p>
-    </div>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen in a water molecule" data-info="h1">
+        <circle cx="50" cy="81" r="17" fill="url(#gH)" stroke="#888" stroke-width="0.8"/>
+        <text x="50" y="81" text-anchor="middle" dominant-baseline="central" style="font-size:12px;font-weight:500;fill:#333">H</text>
+      </g>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen in a water molecule" data-info="h1">
+        <circle cx="130" cy="81" r="17" fill="url(#gH)" stroke="#888" stroke-width="0.8"/>
+        <text x="130" y="81" text-anchor="middle" dominant-baseline="central" style="font-size:12px;font-weight:500;fill:#333">H</text>
+      </g>
+      <text x="18" y="86" text-anchor="middle" style="font-size:12px;font-weight:600;fill:#854F0B">δ+</text>
+      <text x="162" y="86" text-anchor="middle" style="font-size:12px;font-weight:600;fill:#854F0B">δ+</text>
+    </svg>
   </div>
 
-</div><!-- /pw -->
+  <!-- PANEL 2 · Hydrogen bonding: three identical molecules (O r=17, H r=11, O–H 36,
+       angle about 104.5 degrees). Each hydrogen bond runs roughly in line with the O–H bond it starts from. -->
+  <div class="panel" id="panel-2">
+    <p class="panel-title">Hydrogen bonding</p>
+    <p class="panel-sub">polarity links neighboring molecules</p>
+    <svg role="group" aria-label="Three water molecules of the same size. Each hydrogen of the upper molecule is linked by a dashed hydrogen bond to the oxygen of a molecule below." viewBox="-2 0 244 176">
+      <defs>
+        <radialGradient id="gO2" cx="35%" cy="28%" r="72%">
+          <stop offset="0%" stop-color="#F28B6E"/><stop offset="40%" stop-color="#D85A30"/><stop offset="100%" stop-color="#8B2A10"/>
+        </radialGradient>
+        <radialGradient id="gH2" cx="35%" cy="28%" r="70%">
+          <stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#E8F4FF"/><stop offset="100%" stop-color="#A8C8E8"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Hydrogen bonds (dashed teal) -->
+      <line x1="82.8" y1="73.7" x2="59.1" y2="92.0" stroke="#2A9D8F" stroke-width="2" stroke-dasharray="4 3"/>
+      <line x1="157.2" y1="73.7" x2="180.9" y2="92.0" stroke="#2A9D8F" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="70" y="100" text-anchor="start" style="font-size:11px;font-weight:600;fill:#0F6E56">H-bond</text>
+      <text x="170" y="100" text-anchor="end" style="font-size:11px;font-weight:600;fill:#0F6E56">H-bond</text>
+
+      <!-- Covalent bonds -->
+      <g stroke="#AEB8C1" stroke-width="4" stroke-linecap="round">
+        <line x1="120" y1="45" x2="91.5" y2="67"/>
+        <line x1="120" y1="45" x2="148.5" y2="67"/>
+        <line x1="45.7" y1="102.4" x2="10.9" y2="93.4"/>
+        <line x1="45.7" y1="102.4" x2="45.7" y2="138.4"/>
+        <line x1="194.3" y1="102.4" x2="229.1" y2="93.4"/>
+        <line x1="194.3" y1="102.4" x2="194.3" y2="138.4"/>
+      </g>
+
+      <!-- Upper molecule -->
+      <g class="cl" role="button" tabindex="0" aria-label="Oxygen of the upper molecule" data-info="o2">
+        <circle cx="120" cy="45" r="17" fill="url(#gO2)" stroke="#8B2A10" stroke-width="0.8"/>
+        <text x="120" y="45" text-anchor="middle" dominant-baseline="central" style="font-size:13px;font-weight:500;fill:#fff">O</text>
+      </g>
+      <text x="120" y="17" text-anchor="middle" style="font-size:11px;font-weight:600;fill:#8B2A10">δ−</text>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen forming a hydrogen bond" data-info="h2">
+        <circle cx="91.5" cy="67" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="91.5" y="67" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen forming a hydrogen bond" data-info="h2">
+        <circle cx="148.5" cy="67" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="148.5" y="67" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+      <text x="76" y="62" text-anchor="end" style="font-size:11px;font-weight:600;fill:#854F0B">δ+</text>
+      <text x="164" y="62" text-anchor="start" style="font-size:11px;font-weight:600;fill:#854F0B">δ+</text>
+
+      <!-- Lower-left molecule -->
+      <g class="cl" role="button" tabindex="0" aria-label="Oxygen of a neighboring molecule" data-info="o3">
+        <circle cx="45.7" cy="102.4" r="17" fill="url(#gO2)" stroke="#8B2A10" stroke-width="0.8"/>
+        <text x="45.7" y="102.4" text-anchor="middle" dominant-baseline="central" style="font-size:13px;font-weight:500;fill:#fff">O</text>
+      </g>
+      <text x="64" y="126" text-anchor="start" style="font-size:11px;font-weight:600;fill:#8B2A10">δ−</text>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen of a neighboring molecule" data-info="h3">
+        <circle cx="10.9" cy="93.4" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="10.9" y="93.4" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen of a neighboring molecule" data-info="h3">
+        <circle cx="45.7" cy="138.4" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="45.7" y="138.4" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+
+      <!-- Lower-right molecule -->
+      <g class="cl" role="button" tabindex="0" aria-label="Oxygen of a neighboring molecule" data-info="o3">
+        <circle cx="194.3" cy="102.4" r="17" fill="url(#gO2)" stroke="#8B2A10" stroke-width="0.8"/>
+        <text x="194.3" y="102.4" text-anchor="middle" dominant-baseline="central" style="font-size:13px;font-weight:500;fill:#fff">O</text>
+      </g>
+      <text x="176" y="126" text-anchor="end" style="font-size:11px;font-weight:600;fill:#8B2A10">δ−</text>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen of a neighboring molecule" data-info="h3">
+        <circle cx="229.1" cy="93.4" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="229.1" y="93.4" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+      <g class="cl" role="button" tabindex="0" aria-label="Hydrogen of a neighboring molecule" data-info="h3">
+        <circle cx="194.3" cy="138.4" r="11" fill="url(#gH2)" stroke="#888" stroke-width="0.8"/>
+        <text x="194.3" y="138.4" text-anchor="middle" dominant-baseline="central" style="font-size:10px;font-weight:500;fill:#333">H</text>
+      </g>
+
+      <text x="120" y="170" text-anchor="middle" style="font-size:10.5px;font-weight:600;fill:#0F6E56">cohesion: molecules cling together</text>
+    </svg>
+  </div>
+
+</div>
+
+<p class="bond-key">Solid lines: covalent bonds within molecules · Dashed teal lines: hydrogen bonds between molecules</p>
+
+<p class="caption">The first panel shows a water molecule. Its bent shape places both hydrogens on the same side, so the effects of its two polar bonds add together, giving the molecule a slightly negative end and a slightly positive end. The second panel shows what that makes possible. Each dashed line is a hydrogen bond. In liquid water, these bonds continually break and re-form, linking molecules into a flexible, shifting network.</p>
+
+<p class="tagline">Environmental Science through Nature's Genius</p>
+
+<!-- Information box: moved into the panel the student selects, so it appears just below the atoms -->
+<section id="detail" class="detail" aria-live="polite" hidden>
+  <button type="button" id="close-detail">Close ×</button>
+  <h3 id="detail-title"></h3>
+  <p id="detail-text"></p>
+</section>
 
 <script>
-const POPUP_DATA = {
-  o2: {
-    name: "Oxygen (O)",
-    desc: "Oxygen is highly electronegative, meaning it pulls shared electrons toward itself more strongly than hydrogen does. This unequal sharing gives the oxygen side of the molecule a concentration of negative charge, shown as δ−. The red color follows the standard chemistry convention for oxygen.",
-    color: "#8B2A10"
-  },
-  h2: {
-    name: "Hydrogen (H)",
-    desc: "With their shared electrons pulled toward oxygen, the hydrogen ends of the molecule are left electron-poor. This gives each hydrogen side a slight positive charge, shown as δ+. Together with the negative oxygen end, water's polarity makes the molecule behave like a tiny magnet.",
-    color: "#854F0B"
-  },
-  o3: {
-    name: "Oxygen attracting neighboring molecules",
-    desc: "The δ− charge on this oxygen attracts the δ+ hydrogen ends of neighboring water molecules. Water's polarity is what makes this attraction possible. The resulting hydrogen bond is roughly 20 times weaker than a covalent bond, but strong enough to hold liquid water together at everyday temperatures.",
-    color: "#8B2A10"
-  },
-  h3: {
-    name: "Hydrogen forming a hydrogen bond",
-    desc: "The δ+ charge on this hydrogen attracts the δ− oxygen of a neighboring molecule below. The dashed teal line shows the hydrogen bond. The covalent bond within the molecule stays intact while this weaker, polarity-driven attraction forms at the same time.",
-    color: "#854F0B"
-  },
-  o4: {
-    name: "Neighboring oxygen, δ−",
-    desc: "This oxygen atom's δ− charge attracts the δ+ hydrogen from the molecule above. In liquid water, each molecule typically holds two to three hydrogen bonds at any moment, forming the shifting network that underlies cohesion, surface tension, and water's unusually high boiling point.",
-    color: "#8B2A10"
-  }
+const info = {
+  o1: ['Oxygen (O)', 'Oxygen pulls the shared electrons closer to itself than hydrogen does. The oxygen side has a slight negative charge, shown as δ−.'],
+  h1: ['Hydrogen (H)', 'The shared electrons spend more time near oxygen, leaving each hydrogen with a slight positive charge, shown as δ+. Water’s bent shape keeps the effects of its two polar bonds from canceling.'],
+  o2: ['Oxygen (O)', 'The slightly negative oxygen side can attract the slightly positive hydrogen of a neighboring water molecule. In liquid water, hydrogen bonds continually form and break.'],
+  h2: ['Hydrogen forming a hydrogen bond', 'The slightly positive hydrogen attracts the slightly negative oxygen of a neighboring water molecule. The dashed teal line shows a hydrogen bond. The solid line shows a covalent bond within the water molecule.'],
+  o3: ['Neighboring oxygen (O)', 'This oxygen’s slight negative charge attracts the slightly positive hydrogen from the molecule above. Hydrogen bonds continually form and break, creating a shifting network in liquid water.'],
+  h3: ['Hydrogen (H)', 'This hydrogen also carries a slight positive charge. It can attract the oxygen of yet another water molecule, so the network extends in every direction beyond what this panel shows.']
 };
 
-let activePop = null;
+const box = document.getElementById('detail');
+const title = document.getElementById('detail-title');
+const desc = document.getElementById('detail-text');
+const closeBtn = document.getElementById('close-detail');
+let last = null;
 
-function showP(event, id) {
-  event.stopPropagation();
-  const pop = document.getElementById('pop');
-  if (activePop === id && pop.style.display === 'block') {
-    pop.style.display = 'none';
-    activePop = null;
-    return;
-  }
-  activePop = id;
-  const data = POPUP_DATA[id];
-  const pw   = document.getElementById('pw');
-  const wr   = pw.getBoundingClientRect();
-  const popW = 204;
-
-  let left = event.clientX - wr.left;
-  let top  = event.clientY - wr.top + 12;
-  if (left + popW > wr.width - 4) left = wr.width - popW - 4;
-  if (left < 4) left = 4;
-  if (top + 230 > wr.height) top = event.clientY - wr.top - 240;
-
-  document.getElementById('pop-bar').style.background = data.color;
-  document.getElementById('pop-name').textContent = data.name;
-  document.getElementById('pop-desc').textContent = data.desc;
-  pop.style.left    = left + 'px';
-  pop.style.top     = top  + 'px';
-  pop.style.display = 'block';
+function show(el) {
+  if (last) last.classList.remove('active');
+  last = el;
+  el.classList.add('active');
+  const data = info[el.dataset.info];
+  title.textContent = data[0];
+  desc.textContent = data[1];
+  el.closest('.panel').appendChild(box);   // place the box directly under the selected atom's panel
+  box.hidden = false;
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-document.addEventListener('click', function (e) {
-  const pop = document.getElementById('pop');
-  if (pop.style.display !== 'block') return;
-  if (e.target.closest('.cl') || e.target.closest('#pop')) return;
-  pop.style.display = 'none';
-  activePop = null;
+function hide() {
+  box.hidden = true;
+  if (last) { last.classList.remove('active'); last.focus(); }
+}
+
+document.querySelectorAll('[data-info]').forEach(el => {
+  el.setAttribute('aria-controls', 'detail');
+  el.addEventListener('click', () => show(el));
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(el); }
+  });
 });
+closeBtn.addEventListener('click', hide);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !box.hidden) hide(); });
 </script>
 
 </body>
